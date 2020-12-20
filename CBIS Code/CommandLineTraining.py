@@ -5,14 +5,26 @@ import sys
   These arguments can be run if you have a GPU accessible.
   Otherwise, they would be run in a cloud instance command line or notebook
 """
+try:
+    models_path, pipeline_config_path, model_dir, checkpoint_dir = sys.argv
+except Exception as err:
+    print('Command line arguments mismatch \n{}'.format(err))
 
+
+# install pycotools
+print('Installing pycotools...')
 os.system('cmd /k pip install pycotools')
-os.system('cmd /k cd /Users/jacksimonson/models/research')
-os.system('cmd' /k protoc object_detection/protos/*.proto --python_out=.)
+print('Installed.')
+print('Changing working directory to {}'.format(os.path.join(models_path, 'research')))
+os.system('cmd /k cd {}'.format(os.path.join(models_path, 'research')))
+print('Setting protos')
+os.system('cmd /k protoc object_detection/protos/*.proto --python_out=.')
 
-os.environ['PYTHONPATH'] += ":/Users/jacksimonson/models/"
-sys.path.append("/Users/jacksimonson/models/")
+print('Adding {} to PYTHONPATH and sys.path'.format(models_path))
+os.environ['PYTHONPATH'] += ":{}".format(models_path)
+sys.path.append("{}".format(models_path))
 
+print('Building and installing object_detection library...')
 os.system('cmd /k python setup.py build')
 os.system('cmd /k python setup.py install')
 
@@ -20,9 +32,16 @@ os.system('cmd /k python ../official/pip_package/setup.py build')
 os.system('cmd /k python ../official/pip_package/setup.py install')
 
 os.system('cmd /k pip install lvis')
+print('Installed')
 
 # Execute full model training
-os.system('cmd /k python object_detection/model_main_tf2.py --pipeline_config_path="/Users/jacksimonson/model_new_three/pipeline.config" --model_dir="/Users/jacksimonson/model_new_three" --alsologtostderr)
+print('Running training...')
+train_command = "python object_detection/model_main_tf2.py --pipeline_config_path={} --model_dir={} --alsologtostderr".format(pipeline_config_path, model_dir)
+os.system('cmd /k {}'.format(train_command))
+print('Trained successfully')
 
 # Evaluate
-os.system('cmd /k python object_detection/model_main_tf2.py --pipeline_config_path="/Users/jacksimonson/model_new_three/pipeline.config" --model_dir="/Users/jacksimonson/model_new_three" --config_dir="Users/jacksimonson/models/research/object_detection/training" --alsologtostderr)
+print('Evaluating')
+eval_command = "python object_detection/model_main_tf2.py --pipeline_config_path={} --model_dir={} --checkpoint_dir={} --alsologtostderr".format(pipeline_config_path, model_dir, checkpoint_dir)
+os.system('cmd /k {}'.format(eval_command))
+print('Evaluated.')
