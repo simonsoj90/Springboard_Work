@@ -5,4 +5,8 @@
 \margl1440\margr1440\vieww10800\viewh8400\viewkind0
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-\f0\fs24 \cf0 If my model had been successful enough for deployment, the goal would be to package it as a Python library or as a website where medical providers could upload and have their images processed. This would allow for a continuous stream of new samples to help with continued batch model tuning.}
+\f0\fs24 \cf0 If my model had been successful enough for deployment, there are a few ways to deploy it:\
+\
+- As a Python library that could be used by researchers\
+- As website where medical providers could upload and have their images processed. This would allow for a continuous stream of new samples to help with continued batch model tuning\
+- Using TensorFlow Serving, a docker container could be built that would allow the model to be used for real-time predictions (this is less ideal as another mechanism would be needed to store and re-train the model using new images)}
